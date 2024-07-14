@@ -8,6 +8,36 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="./assets/libs/bootstrap-3.4.1/css/bootstrap.min.css">
     <title>首页</title>
+    <style>
+        body{
+            background-color: #eee;
+        }
+        body::after {
+            position: fixed;
+            top: 0;
+            left: 0;
+            content: '';
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(
+                    0deg,
+                    #333 0px,
+                    #333 1px,
+                    transparent 1px,
+                    transparent 100px
+            ),
+            linear-gradient(
+                    90deg,
+                    #333 0px,
+                    #333 1px,
+                    transparent 1px,
+                    transparent 100px
+            );
+            background-size: 25px 25px;
+            opacity: 0.1;
+            z-index: -1;
+        }
+    </style>
 </head>
 <body>
 
