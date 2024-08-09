@@ -10,61 +10,240 @@
     <title>首页</title>
     <style>
         body{
-            background-color: #eee;
+            background-color: #fff;
+            user-select: none;
         }
-        body::after {
-            position: fixed;
-            top: 0;
-            left: 0;
-            content: '';
+        .main{
+            width: 70vw;
+            margin: 3vw auto 0;
+            padding: 5px;
+        }
+        .header{
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header>div{
+            font-size: 36px;
+            color: #333;
+            font-weight: bold;
+            line-height: 50px;
+        }
+        .header .menu{
+            cursor: pointer;
+            font-size: 30px;
+        }
+        .content{
+            width: 100%;
+            height: calc(100vh - 50px - 50px - 43px);
+            overflow: hidden;
+        }
+        .content>.tabContainer{
             width: 100%;
             height: 100%;
-            background-image: linear-gradient(
-                    0deg,
-                    #333 0px,
-                    #333 1px,
-                    transparent 1px,
-                    transparent 100px
-            ),
-            linear-gradient(
-                    90deg,
-                    #333 0px,
-                    #333 1px,
-                    transparent 1px,
-                    transparent 100px
-            );
-            background-size: 25px 25px;
-            opacity: 0.1;
-            z-index: -1;
+            overflow: auto;
         }
+        .content>.tabContainer>.tab{
+            width: 100%;
+            height: 100%;
+        }
+        .content>.tabContainer>.tab.json{
+            position: relative;
+        }
+        .content>.tabContainer>.tab.json>.title{
+            font-size: 24px;
+            color: #575656;
+        }
+        .content>.tabContainer>.tab.json>.sub-title{
+            font-size: 14px;
+            color: #a2a1a1;
+            margin: 10px 0;
+        }
+        .content>.tabContainer>.tab.json>.dashed-line{
+        /*    dashed-line*/
+            width: 100%;
+            height: 1px;
+            border-bottom:1px dashed #ccc;
+        }
+
+        .content>.tabContainer>.tab.json>.option{
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+        .content>.tabContainer>.tab.json>.option>div{
+            cursor: pointer;
+            width: 80px;
+            text-align: center;
+            font-size: 16px;
+            color: #575656;
+            border: 1px solid #ccc;
+            margin: 10px 0;
+            padding: 5px;
+        }
+        .content>.tabContainer>.tab.json>textarea{
+            width: 96%;
+            padding: 10px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            resize: vertical;
+            min-height: 300px;
+            height: 500px;
+        }
+
+        .footer{
+            height: 50px;
+            background-color: #0d1e2d;
+        }
+        .footer>.copyright{
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            line-height: 50px;
+            color: #fff;
+        }
+
     </style>
 </head>
 <body>
 
-<footer>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Project name</a>
+<div class="main">
+    <div class="header">
+        <div class="name">x7zcc</div>
+        <div class="menu">=</div>
+    </div>
+    <div class="content">
+        <div class="tabContainer">
+            <div class="tab json">
+                <div class="title">json 格式化工具</div>
+                <div class="sub-title">在输入框中输入JSON字符串，系统自动进行校验，校验失败会提示错误位置。点击按钮进行美化、压缩、转义等操作。</div>
+                <div class="dashed-line"></div>
+                <div class="option">
+                    <div class="minify">压缩</div>
+                    <div class="beautify">格式化</div>
+                    <div class="clear">清空</div>
+                </div>
+                <textarea placeholder="请输入json字符串" class="json-input"></textarea>
             </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
         </div>
-    </nav>
-</footer>
+    </div>
+
+</div>
+<div class="footer">
+    <div class="copyright">
+        <div class="item">Copyright © 2023 <a href="//x7z.cc">x7zcc</a>. All rights reserved.</div>
+        <div class="item"> 豫ICP备2022019546号-2</div>
+    </div>
+</div>
 
 <script src="./assets/libs/jquery-3.7.1/jquery-3.7.1.min.js"></script>
-<script src="./assets/libs/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+
+<script>
+    // 页面加载完成后执行
+    $(function () {
+        // 压缩按钮点击事件
+        $(".minify").click(function () {
+            minify()
+        })
+        // 格式化按钮点击事件
+        $(".beautify").click(function () {
+            beautify()
+        })
+        // 清空按钮点击事件
+        $(".clear").click(function () {
+            $(".json-input").val("")
+        })
+
+        $('.json-input').on('keydown', function (e) {
+            $(".json-input").on("keydown", function (e) {
+                if (e.key === "Tab") {
+                    e.preventDefault();
+                    let start = this.selectionStart;
+                    let end = this.selectionEnd;
+                    // 获取输入框的值
+                    let value = $(this).val();
+                    // 在输入框中插入空格
+                    $(this).val(value.substring(0, start) + "    " + value.substring(end));
+                    // 设置光标位置
+                }
+            })
+        });
+    });
+
+    function minify() {
+        let jsonInput = $(".json-input")
+        if (jsonInput.val() === "") {
+            toast("请输入json字符串")
+            return
+        }
+        try {
+            let json = JSON.parse(jsonInput.val())
+            jsonInput.val(JSON.stringify(json))
+        } catch (e) {
+            toast("压缩失败")
+        }
+    }
+
+    function beautify() {
+        let jsonInput = $(".json-input")
+        if (jsonInput.val() === "") {
+            toast("请输入json字符串")
+            return
+        }
+        try {
+            let json = JSON.parse(jsonInput.val())
+            jsonInput.val(JSON.stringify(json, null, 4))
+        } catch (e) {
+            toast("格式化失败")
+        }
+    }
+
+    function toast(msg) {
+
+        toast.queue = toast.queue || [];  // 队列
+        toast.queue.push(msg);
+        toast.box = toast.box || createBox();
+
+        // 任务是否在执行
+        toast.isExecuting = toast.isExecuting || false;
+        if (!toast.isExecuting){
+            toast.isExecuting = true;
+            execute();
+        }
+
+        function execute(){
+            if (toast.queue.length > 0){
+                const msg = toast.queue.shift();
+                toast.box.innerHTML = msg;
+                document.body.appendChild(toast.box);
+                console.log(msg)
+                setTimeout(() => {
+                    document.body.removeChild(toast.box);
+                    setTimeout(execute, 300);
+                }, 2000);
+            } else {
+                toast.isExecuting = false;
+            }
+        }
+
+        function createBox(){
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+            position: fixed;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        `;
+            return toast;
+        }
+    }
+</script>
 </body>
 </html>

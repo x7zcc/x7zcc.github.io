@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="../libs/jquery-3.7.1/jquery-3.7.1.min.js"></script>
+    <title>在线五子棋</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500">您的浏览器不支持 canvas。</canvas>
+
+<script>
+    let ctx = $('#canvas')[0].getContext('2d');
+
+    // 棋盘绘制
+    ctx.fillStyle = '#eee';
+    ctx.fillRect(0,0,500,500);
+    ctx.beginPath();
+    for (let i = 0; i < 15; i++) {
+        ctx.moveTo(40 + i * 30,40);
+        ctx.lineTo(40 + i * 30,460);
+        ctx.moveTo(40,40 + i * 30);
+        ctx.lineTo(460, 40 + i * 30);
+    }
+    ctx.closePath();
+    ctx.stroke();
+
+
+    $('#canvas').on('click',function (e){
+        console.log(e);
+        console.log(e.offsetX,e.offsetY)
+        const row = Math.round((e.offsetX -40) /30);
+        const col = Math.round((e.offsetY -40) /30);
+        console.log(row,col)
+        ctx.beginPath();
+        ctx.arc(40 + row * 30,40 + col * 30, 10, 0, Math.PI * 2, false);
+        ctx.fillStyle = '#484867';
+        ctx.fill();
+    });
+</script>
+</body>
+</html>
